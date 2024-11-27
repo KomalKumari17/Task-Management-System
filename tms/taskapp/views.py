@@ -125,7 +125,7 @@ class UserProfileCreate(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class UserProfileDelete:
+class UserProfileDelete(APIView):
     def delete(self, request, pk):
         try:
             userprofile = UserProfile.objects.get(pk=pk)
