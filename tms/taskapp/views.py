@@ -102,23 +102,21 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class UserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = UserProfile.objects.all()
+    queryset = UserProfile.objects.select_related('user')
     serializer_class = UserProfileSerializer
 
 class UserProfileCreate(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # Check if the user already has a profile
         if UserProfile.objects.filter(user=request.user).exists():
             return Response({'error': 'User Profile already exists.'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Initialize the serializer with context
         serializer = UserProfileSerializer(data=request.data, context={'request': request})
         
         if serializer.is_valid():
             try:
-                serializer.save(user=request.user)  # Explicitly pass the user to save()
+                serializer.save(user=request.user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED) 
             except IntegrityError as e:
                 return Response({"error": "Database integrity error", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -137,5 +135,34 @@ class UserProfileDelete(APIView):
 
 class TaskViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    queryset = Task.objects.all()
+    queryset = Task.objects.select_related('assigned_user')
     serializer_class = TaskSerializer
+
+class TaskCreate(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response({"error": "User is not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        data = request.data.copy()
+        data['assigned_user'] = request.user.id  
+        
+        serializer = TaskSerializer(data=data)  
+        if serializer.is_valid():
+            try:
+                task = serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except IntegrityError as e:
+                return Response({"error": "Database integrity error", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class TaskDelete(APIView):
+    def delete(self, request, pk):
+        try:
+            task = Task.objects.get(pk=pk)
+            task.delete()
+            return Response({'message': 'Task deleted successfuly'}, status=status.HTTP_204_NO_CONTENT)
+
+        except Task.DoesNotExist:
+            return Response({'error': 'Task not found or unauthorized'}, status=status.HTTP_404_NOT_FOUND)

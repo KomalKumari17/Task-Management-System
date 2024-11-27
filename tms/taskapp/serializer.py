@@ -88,6 +88,12 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = [
-            'id', 'title', 'description', 'is_completed', 
+            'id', 'title', 'description', 'is_completed',
             'due_date', 'created_at', 'updated_at', 'assigned_user', 'assigned_user_id'
         ]
+
+    def create(self, validated_data):
+        if 'assigned_user' not in validated_data:
+            validated_data['assigned_user'] = self.context['request'].user
+
+        return super().create(validated_data)
