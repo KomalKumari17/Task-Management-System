@@ -124,6 +124,16 @@ class UserProfileCreate(APIView):
                 return Response({"error": "Database integrity error", "details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserProfileDelete:
+    def delete(self, request, pk):
+        try:
+            userprofile = UserProfile.objects.get(pk=pk)
+            userprofile.delete()
+            return Response({'message': 'UserProfile deleted successfuly'}, status=status.HTTP_204_NO_CONTENT)
+
+        except UserProfile.DoesNotExist:
+            return Response({'error': 'UserProfile not found or unauthorized'}, status=status.HTTP_404_NOT_FOUND)
 
 class TaskViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
