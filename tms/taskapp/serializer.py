@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import User, Task, UserProfile
-import re
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,7 +59,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return value
 
     def validate_profile_image(self, value):
-        if value and value.size > 5 * 1024 * 1024:  # 5 MB limit
+        if value and value.size > 5 * 1024 * 1024:  
             raise serializers.ValidationError("Profile picture must be under 5 MB.")
         return value
 
@@ -94,6 +93,6 @@ class TaskSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         if 'assigned_user' not in validated_data:
-            validated_data['assigned_user'] = self.context['request'].user
+            validated_data['assigned_user'] = self.context['request'].user  
 
         return super().create(validated_data)

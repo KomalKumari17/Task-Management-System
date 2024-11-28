@@ -26,33 +26,30 @@ class RegisterUser(APIView):
         try:
             user = serializer.save()
         except IntegrityError as e:
-            if 'email' in str(e):
-                return Response({
-                    'status': 400,
-                    'message': 'Email already exists.',
-                    'errors': str(e)
-                }, status=status.HTTP_400_BAD_REQUEST)
-            elif 'username' in str(e):
-                return Response({
-                    'status': 400,
-                    'message': 'Username already exists.',
-                    'errors': str(e)
-                }, status=status.HTTP_400_BAD_REQUEST)
+            error_message = str(e)
+            if 'email' in error_message:
+                message = 'Email already exists.'
+            elif 'username' in error_message:
+                message = 'Username already exists.'
+            else:
+                message = 'Username or email already exists.'
+
             return Response({
                 'status': 400,
-                'message': 'Username or email already exists.',
-                'errors': str(e)
+                'message': message,
+                'errors': error_message
             }, status=status.HTTP_400_BAD_REQUEST)
 
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
 
         return Response({
-            'status': 200,
+            'status': 201,
             'payload': serializer.data,
             'token': access_token,
             'message': 'User registered successfully.'
         }, status=status.HTTP_201_CREATED)
+
                
 class LoginUser(APIView):
     def post(self, request):        
@@ -148,7 +145,7 @@ class TaskCreate(APIView):
         data = request.data.copy()
         data['assigned_user'] = request.user.id  
         
-        serializer = TaskSerializer(data=data)  
+        serializer = TaskSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             try:
                 task = serializer.save()
