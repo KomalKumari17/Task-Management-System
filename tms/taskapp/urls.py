@@ -1,25 +1,22 @@
 from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
-from taskapp.views import LoginUser, RegisterUser, UserViewSet, UserProfileCreate, UserProfileDelete, TaskCreate, TaskViewSet, TaskDelete, UserProfileViewSet
+from taskapp.views import *
 from rest_framework import routers
 
 router = routers.DefaultRouter()
+router.register(r"admin/user", UserViewSet)
+router.register(r"admin/userprofile", UserProfileViewSet, basename='userprofile')
+router.register(r"admin/task", TaskViewSet)
+router.register(r'tasks', SingleUserTaskViewSet, basename='user-task')
+router.register(r"admin/login", LoginUserViewSet, basename='login')
+router.register(r"admin/register", RegisterUserViewSet, basename='register')
 
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('register/', RegisterUser.as_view(), name='register'),
-    path('login/', LoginUser.as_view(), name='login'),
+    # path('register/', RegisterUserViewSet.as_view(), name='register'),
+    # path('login/', LoginUserViewSet.as_view(), name='login'),
 
-    path('user/view/', UserViewSet.as_view({'get':'list'}), name='user-view'),
-
-    path('userprofile/view/', UserProfileViewSet.as_view({'get':'list'}), name='userprofile-view'),
-    path('userprofile/create/', UserProfileCreate.as_view(), name='userprofile-create'),  
-    path('userprofile/<int:pk>/', UserProfileDelete.as_view(), name='userprofile-delete'),
-
-    path('task/create/', TaskCreate.as_view(), name='task-create'),  
-    path('task/<int:pk>/', TaskDelete.as_view(), name='task-delete'),
-    path('task/view/', TaskViewSet.as_view({'get':'list'}), name='task-view'),
-
+  
 ]

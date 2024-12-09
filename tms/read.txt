@@ -1,0 +1,43 @@
+  // Retrieve a specific task by ID
+  // const handleViewTask = async (id) => {
+  //   try {
+  //     const response = await axios.get(`http://127.0.0.1:8000/api/tasks/${id}/`);
+  //     setTaskToUpdate(response.data);
+  //     setUpdatedTask(response.data.title); // Set the current task's title for editing
+  //   } catch (err) {
+  //     setError("Error fetching the task.");
+  //   }
+  // };
+
+  // Update an existing task
+  // const handleUpdateTask = async () => {
+  //   try {
+  //     const response = await axios.put(
+  //       `http://127.0.0.1:8000/api/tasks/${taskToUpdate.id}/`,
+  //       { title: updatedTask }
+  //     );
+  //     setTasks(
+  //       tasks.map((task) =>
+  //         task.id === taskToUpdate.id ? response.data : task
+  //       )
+  //     );
+  //     setTaskToUpdate(null);
+  //     setUpdatedTask(""); // Clear the update input field
+  //   } catch (err) {
+  //     setError("Error updating task.");
+  //   }
+  // };
+
+     {/* Update Task */}
+      {/* {taskToUpdate && (
+        <div>
+          <h2>Update Task</h2>
+          <input
+            type="text"
+            value={updatedTask}
+            onChange={(e) => setUpdatedTask(e.target.value)}
+            placeholder="Update task title"
+          />
+          <button onClick={handleUpdateTask}>Update Task</button>
+        </div>
+      )} */}
