@@ -105,12 +105,12 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-# class UserProfileViewSet(viewsets.ModelViewSet):
-#     # permission_classes = [IsAuthenticated]
-#     queryset = UserProfile.objects.select_related('user')
-#     serializer_class = UserProfileSerializer
-
 class UserProfileViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = UserProfile.objects.select_related('user')
+    serializer_class = UserProfileSerializer
+
+class SingleUserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = UserProfileSerializer
 
