@@ -6,7 +6,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r"admin/user", UserViewSet)
-router.register(r"admin/userprofile", SingleUserProfileViewSet, basename='self-userprofile')
+router.register(r"self/userprofile", SingleUserProfileViewSet, basename='self-userprofile')
 router.register(r"admin/userprofile", UserProfileViewSet, basename='userprofile')
 router.register(r"admin/task", TaskViewSet)
 router.register(r'tasks', SingleUserTaskViewSet, basename='user-task')

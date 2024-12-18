@@ -92,6 +92,7 @@ class LoginUserViewSet(viewsets.ViewSet):
                     'id': user.id,
                     'email': user.email,
                     'password': user.password,
+                    'is_staff': user.is_staff
                 },
             }, status=status.HTTP_200_OK)
         else:
@@ -118,7 +119,7 @@ class SingleUserProfileViewSet(viewsets.ModelViewSet):
         return UserProfile.objects.filter(user=self.request.user)
 
 
-class UserProfileCreate(APIView):
+class SingleUserProfileCreate(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
